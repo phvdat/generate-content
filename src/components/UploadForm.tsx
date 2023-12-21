@@ -3,11 +3,11 @@ import React, { ChangeEvent, useState } from 'react'
 import { sendMessage } from 'utils/sendMessage'
 import * as XLSX from 'xlsx'
 
-function sleep(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
+// function sleep(ms: number) {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, ms)
+//   })
+// }
 
 const UploadForm = () => {
   const [processedData, setProcessedData] = useState<any[]>([])
