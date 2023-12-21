@@ -27,7 +27,7 @@ const UploadForm = () => {
         console.log(data)
         const processedData = await Promise.all(
           data.map(async (row: any) => {
-            await sleep(30000)
+            // await sleep(30000)
             const question: string = row['Prompt 1']
             const { data } = await sendMessage(question, apiKey)
             console.log(data)

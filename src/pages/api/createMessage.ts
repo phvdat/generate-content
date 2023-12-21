@@ -21,7 +21,7 @@ export default async function createMessage(req: NextApiRequest, res: NextApiRes
     })
     const data = await response.json()
     res.status(200).json({ data })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message })
   }
 }
