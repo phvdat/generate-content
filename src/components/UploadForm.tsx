@@ -3,11 +3,11 @@ import React, { ChangeEvent, useState } from 'react'
 import { sendMessage } from 'utils/sendMessage'
 import * as XLSX from 'xlsx'
 
-// function sleep(ms: number) {
-//   return new Promise((resolve) => {
-//     setTimeout(resolve, ms)
-//   })
-// }
+function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
 
 const UploadForm = () => {
   const [processedData, setProcessedData] = useState<any[]>([])
@@ -27,7 +27,7 @@ const UploadForm = () => {
         console.log(data)
         const processedData = await Promise.all(
           data.map(async (row: any) => {
-            // await sleep(30000)
+            await sleep(30000)
             const question: string = row['Prompt 1']
             const { data } = await sendMessage(question, apiKey)
             console.log(data)
