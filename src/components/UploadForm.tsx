@@ -42,7 +42,7 @@ const UploadForm = () => {
         reject(error)
       }
     })
-    promise.then((d) => {
+    promise.then(() => {
       // Handle further actions if needed
     })
   }
