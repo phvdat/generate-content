@@ -11,7 +11,7 @@ function sleep(ms: number) {
 
 const UploadForm = () => {
   const [processedData, setProcessedData] = useState<any[]>([])
-
+  const [apiKey, setApiKey] = useState('')
   const processing = (file: any) => {
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader()
@@ -29,7 +29,7 @@ const UploadForm = () => {
           data.map(async (row: any) => {
             await sleep(30000)
             const question: string = row['Prompt 1']
-            const { data } = await sendMessage(question)
+            const { data } = await sendMessage(question, apiKey)
             console.log(data)
             const reply = data.message
             return { ...row, ChatGPTcontent: reply }
@@ -63,7 +63,8 @@ const UploadForm = () => {
 
   return (
     <div>
-      <form>
+      <form className="flex flex-col w-96 m-auto gap-2 pt-4">
+        <input type="text" placeholder="API key" onChange={(e: any) => setApiKey(e.target.value)} />
         <input
           type="file"
           placeholder="Upload"
