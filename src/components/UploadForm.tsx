@@ -3,12 +3,6 @@ import React, { ChangeEvent, useState } from 'react'
 import { sendMessage } from 'utils/sendMessage'
 import * as XLSX from 'xlsx'
 
-function sleep(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
-
 const UploadForm = () => {
   const [processedData, setProcessedData] = useState<any[]>([])
   const [apiKey, setApiKey] = useState('')
@@ -24,17 +18,14 @@ const UploadForm = () => {
         const wsname = wb.SheetNames[0]
         const ws = wb.Sheets[wsname]
         const data = XLSX.utils.sheet_to_json(ws)
-        console.log(data)
-        const processedData = await Promise.all(
-          data.map(async (row: any) => {
-            await sleep(30000)
-            const question: string = row['Prompt 1']
-            const { data } = await sendMessage(question, apiKey)
-            console.log(data)
-            const reply = data.message
-            return { ...row, ChatGPTcontent: reply }
-          })
-        )
+        const processedData: any = []
+        for (const row of data) {
+          const rowData = row as any
+          const question: string = rowData['Prompt 1']
+          const { data } = await sendMessage(question, apiKey)
+          const content = data?.choices?.[0]?.message?.content
+          processedData.push({ ...rowData, ChatGPTcontent: content })
+        }
         setProcessedData(processedData)
         resolve(processedData)
       }
@@ -70,13 +61,15 @@ const UploadForm = () => {
           placeholder="Upload"
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const file = e.target.files?.[0]
-            processing(file)
+            if (file) {
+              processing(file)
+            }
           }}
         />
+        {processedData.length > 0 && (
+          <Button onClick={handleDownload}>Download Processed File</Button>
+        )}
       </form>
-      {processedData.length > 0 && (
-        <Button onClick={handleDownload}>Download Processed File</Button>
-      )}
     </div>
   )
 }

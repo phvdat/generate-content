@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 export default async function createMessage(req: NextApiRequest, res: NextApiResponse) {
   const { messages, apiKey } = req.body
   const url = 'https://api.openai.com/v1/chat/completions'
-
   const body = JSON.stringify({
     messages: [{ role: 'user', content: messages }],
     model: 'gpt-3.5-turbo',
