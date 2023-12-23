@@ -6,6 +6,7 @@ function sleep(ms: number) {
 
 export const sendMessage = async (messages: string, apiKey: string) => {
   try {
+    console.log('hello', new Date())
     const start = Date.now()
     const response = await fetch('/api/createMessage', {
       method: 'POST',
@@ -16,7 +17,6 @@ export const sendMessage = async (messages: string, apiKey: string) => {
     })
     const finish = Date.now()
     const time = finish - start
-    console.log('hello', new Date())
     await sleep(20000 - time)
     return await response.json()
   } catch (error) {

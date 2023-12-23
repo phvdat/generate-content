@@ -1,12 +1,25 @@
+import { useForm } from 'react-hook-form'
 import { Button } from '@apideck/components'
-import React, { ChangeEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { sendMessage } from 'utils/sendMessage'
 import * as XLSX from 'xlsx'
+import { useLocalStorage } from 'usehooks-ts'
+
+interface FormValue {
+  apiKey: string
+  file: FileList
+}
 
 const UploadForm = () => {
   const [processedData, setProcessedData] = useState<any[]>([])
-  const [apiKey, setApiKey] = useState('')
-  const processing = (file: any) => {
+  const [apiKeyLocal, setApiKeyLocal] = useLocalStorage('api-key', '')
+  const { register, handleSubmit } = useForm<FormValue>({
+    defaultValues: {
+      apiKey: apiKeyLocal
+    }
+  })
+
+  const processing = (file: any, apiKey: string) => {
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader()
       fileReader.readAsArrayBuffer(file)
@@ -52,23 +65,26 @@ const UploadForm = () => {
     URL.revokeObjectURL(url)
   }
 
+  const onSubmit = (data: any) => {
+    const file = data.file[0]
+    const apiKey = data.apiKey
+    setApiKeyLocal(apiKey)
+    if (file) {
+      processing(file, apiKey)
+    }
+  }
+
   return (
     <div>
-      <form className="flex flex-col w-96 m-auto gap-2 pt-4">
-        <input type="text" placeholder="API key" onChange={(e: any) => setApiKey(e.target.value)} />
-        <input
-          type="file"
-          placeholder="Upload"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            const file = e.target.files?.[0]
-            if (file) {
-              processing(file)
-            }
-          }}
-        />
+      <form className="flex flex-col w-96 m-auto gap-2 pt-4" onSubmit={handleSubmit(onSubmit)}>
+        <input type="text" placeholder="API key" {...register('apiKey')} />
+        <input type="file" {...register('file')} />
         {processedData.length > 0 && (
-          <Button onClick={handleDownload}>Download Processed File</Button>
+          <Button type="button" onClick={handleDownload}>
+            Download
+          </Button>
         )}
+        <Button type="submit">Processing</Button>
       </form>
     </div>
   )
